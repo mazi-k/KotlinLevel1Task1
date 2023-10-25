@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
             binding.gridLayout.addView(frame)
             val square = frame.findViewById<Button>(R.id.square)
             square.text = i.toString()
+            setColor(i, square)
         }
     }
 
@@ -53,7 +54,15 @@ class MainActivity : AppCompatActivity() {
         binding.gridLayout.addView(frame)
         val square = frame.findViewById<Button>(R.id.square)
         square.text = counter.toString()
+        setColor(counter, square)
+    }
 
+    private fun setColor(i: Int, btn: Button) {
+        if (i % 2 == 0){
+            btn.setBackgroundColor(resources.getColor(R.color.red))
+        } else {
+            btn.setBackgroundColor(resources.getColor(R.color.blue))
+        }
     }
 
     companion object {
