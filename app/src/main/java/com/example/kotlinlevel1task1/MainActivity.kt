@@ -1,18 +1,18 @@
 package com.example.kotlinlevel1task1
 
-import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ScrollView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.kotlinlevel1task1.databinding.ActivityMainBinding
+
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var counter = 0
+    private val adapter: MainAdapter by lazy { MainAdapter() }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -23,9 +23,7 @@ class MainActivity : AppCompatActivity() {
             setData()
         }
 
-        binding.addButton.setOnClickListener {
-            updateData()
-        }
+        initViews()
     }
 
     @Override
@@ -34,34 +32,33 @@ class MainActivity : AppCompatActivity() {
         outState.putInt(KEY_COUNT, counter)
     }
 
-    private fun setData() {
-        binding.counter.text = counter.toString()
-        for (i in (1..counter)) {
-            val frame = ScrollView(this)
-            layoutInflater.inflate(R.layout.square_item, frame)
-            binding.gridLayout.addView(frame)
-            val square = frame.findViewById<Button>(R.id.square)
-            square.text = i.toString()
-            setColor(i, square)
+    private fun initViews() {
+        val layoutManager = GridLayoutManager(this, getColumnCountByOrientation())
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.adapter = adapter
+
+        binding.addButton.setOnClickListener {
+            counter++
+            setData()
         }
     }
 
-    private fun updateData() {
-        counter++
-        binding.counter.text = counter.toString()
-        val frame = ScrollView(this)
-        layoutInflater.inflate(R.layout.square_item, frame)
-        binding.gridLayout.addView(frame)
-        val square = frame.findViewById<Button>(R.id.square)
-        square.text = counter.toString()
-        setColor(counter, square)
+    private fun setData() {
+        adapter.setData(generateDataForAdapter(counter))
     }
 
-    private fun setColor(i: Int, btn: Button) {
-        if (i % 2 == 0){
-            btn.setBackgroundColor(resources.getColor(R.color.red))
+    private fun generateDataForAdapter(last: Int): List<Int> {
+        val list = mutableListOf<Int>()
+        for (i in 1..last) list.add(i)
+        return list
+    }
+
+    private fun getColumnCountByOrientation(): Int {
+        val orientation = resources.configuration.orientation
+        return if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            4
         } else {
-            btn.setBackgroundColor(resources.getColor(R.color.blue))
+            3
         }
     }
 
