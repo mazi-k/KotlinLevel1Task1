@@ -56,13 +56,15 @@ class MainActivity : AppCompatActivity() {
     private fun getColumnCountByOrientation(): Int {
         val orientation = resources.configuration.orientation
         return if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            4
+            LANDSCAPE_COL
         } else {
-            3
+            PORTRAIT_COL
         }
     }
 
     companion object {
         private const val KEY_COUNT = "COUNT"
+        private const val PORTRAIT_COL = 3
+        private const val LANDSCAPE_COL = 4
     }
 }
